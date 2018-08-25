@@ -4,6 +4,8 @@
 - Use rdf-canonize to compare n-quads test results.
 - Multiple graph tests.
 - Sort `@type` when looking for scoped contexts.
+- Emit only valid N-Quads from toRdf.
+  - **Note**: This could have a performance impact.
 
 ### Changed
 - Use JSON-LD WG tests.

@@ -216,14 +216,6 @@ const TEST_TYPES = {
         /^#tli02/,
         // blank node properties
         /^#t0118/,
-        // well formed
-        /^#twf01/,
-        /^#twf02/,
-        /^#twf03/,
-        /^#twf04/,
-        /^#twf05/,
-        /^#twf06/,
-        /^#twf07/,
         // html
         /^#th001/,
         /^#th002/,

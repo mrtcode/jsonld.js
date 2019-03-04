@@ -17,17 +17,8 @@ const outputs = [
   // core jsonld library
   {
     entry: [
-      // 'babel-polyfill' is very large, list features explicitly
-      'core-js/fn/array/from',
-      'core-js/fn/array/includes',
-      'core-js/fn/map',
-      'core-js/fn/object/assign',
-      'core-js/fn/promise',
-      'core-js/fn/set',
-      'core-js/fn/string/starts-with',
-      'core-js/fn/symbol',
       // main lib
-      './lib/index.js'
+      './lib/jsonld.js'
     ],
     filenameBase: 'jsonld'
   },
@@ -63,24 +54,7 @@ outputs.forEach(info => {
           include: [{
             // exclude node_modules by default
             exclude: /(node_modules)/
-          }, {
-            // include rdf-canonize
-            include: /(node_modules\/rdf-canonize)/
           }],
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-              plugins: [
-                [
-                  '@babel/plugin-proposal-object-rest-spread',
-                  {useBuiltIns: true}
-                ],
-                '@babel/plugin-transform-modules-commonjs',
-                '@babel/plugin-transform-runtime'
-              ]
-            }
-          }
         }
       ]
     },
@@ -97,33 +71,19 @@ outputs.forEach(info => {
     }
   };
 
-  // plain unoptimized unminified bundle
-  const bundle = webpackMerge(common, {
-    mode: 'development',
-    output: {
-      path: path.join(__dirname, 'dist'),
-      filename: info.filenameBase + '.js',
-      library: info.library || '[name]',
-      libraryTarget: info.libraryTarget || 'umd'
-    }
-  });
-  if(info.library === null) {
-    delete bundle.output.library;
-  }
-  if(info.libraryTarget === null) {
-    delete bundle.output.libraryTarget;
-  }
-
   // optimized and minified bundle
   const minify = webpackMerge(common, {
     mode: 'production',
+    optimization: {
+      minimize: false
+    },
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: info.filenameBase + '.min.js',
-      library: info.library || '[name]',
-      libraryTarget: info.libraryTarget || 'umd'
+      filename: info.filenameBase + '.js',
+      library: 'JSONLD',
+      libraryTarget: 'umd',
+      globalObject: 'typeof zContext === \'object\' ? zContext.Zotero : {}'
     },
-    devtool: 'cheap-module-source-map',
     plugins: [
       /*
       new webpack.optimize.UglifyJsPlugin({
@@ -146,6 +106,6 @@ outputs.forEach(info => {
     delete minify.output.libraryTarget;
   }
 
-  module.exports.push(bundle);
+  // module.exports.push(bundle);
   module.exports.push(minify);
 });
